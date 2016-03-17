@@ -39,6 +39,19 @@ function jumpstart_banners() {
 	// Add Meta Box
 	add_action('admin_init', 'jumpstart_banners_add_meta_box');
 
+	// Add banner data to themeblvd global config array
+	add_filter('themeblvd_frontend_config', 'jumpstart_banners_frontend_config');
+
+	// Add layout builder compat
+	add_filter('themeblvd_builder_section_start_count', 'jumpstart_banners_section_start_count', 20);
+
+	// Add required CSS for banner output
+	add_action('wp_enqueue_scripts', 'jumpstart_banners_style');
+	add_action('wp_enqueue_scripts', 'jumpstart_banners_inline_styles', 25);
+
+	// Output banner
+	add_action('themeblvd_header_after', 'jumpstart_banners_output');
+
 }
 add_action('after_setup_theme', 'jumpstart_banners');
 
@@ -310,7 +323,6 @@ function jumpstart_banners_frontend_config( $config ) {
 
 	return $config;
 }
-add_filter('themeblvd_frontend_config', 'jumpstart_banners_frontend_config');
 
 /**
  * Bump layout builder section count up 1, if banner
@@ -327,7 +339,6 @@ function jumpstart_banners_section_start_count( $count ) {
 
 	return $count;
 }
-add_filter('themeblvd_builder_section_start_count', 'jumpstart_banners_section_start_count', 20);
 
 /**
  * Get featured banner
@@ -428,7 +439,6 @@ function jumpstart_banners_output() {
 		echo themeblvd_banners_get_output();
 	}
 }
-add_action('themeblvd_header_after', 'jumpstart_banners_output');
 
 /**
  * Enqueue CSS file.
@@ -440,7 +450,6 @@ function jumpstart_banners_style() {
 	wp_enqueue_style( 'jumpstart-banners', esc_url( plugins_url('' , __FILE__) . '/banner-style.css' ) );
 
 }
-add_action('wp_enqueue_scripts', 'jumpstart_banners_style');
 
 /**
  * Display featured banner's inline custom height CSS
@@ -507,7 +516,6 @@ function jumpstart_banners_inline_styles() {
 	}
 
 }
-add_action('wp_enqueue_scripts', 'jumpstart_banners_inline_styles', 25);
 
 /**
  * Register text domain for localization.
